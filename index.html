@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Small-Donor Money in the Midterms</title>
+<style>
+:root{--bg:#f4f6f9;--fg:#18202b;--mut:#5d6877;--card:#fff;--bd:#d9dee6;--d:#2b5cab;--r:#b6382f;--warn:#fff4d6;--warnfg:#5a4300;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--fg:#e8ecf2;--mut:#98a3b3;--card:#1b222b;--bd:#2f3946;--d:#6e9be0;--r:#e8756c;--warn:#3a2f10;--warnfg:#f3d98a}}
+:root[data-theme="dark"]{--bg:#12161c;--fg:#e8ecf2;--mut:#98a3b3;--card:#1b222b;--bd:#2f3946;--d:#6e9be0;--r:#e8756c;--warn:#3a2f10;--warnfg:#f3d98a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:920px;margin:0 auto;padding:24px 16px 56px}
+h1{font:700 clamp(26px,5vw,38px)/1.15 Georgia,"Times New Roman",serif;margin:0 0 8px}
+h2{font:700 22px/1.2 Georgia,serif;margin:36px 0 6px}
+p{margin:0 0 10px;max-width:70ch}.mut{color:var(--mut);font-size:14px}
+.warn{background:var(--warn);color:var(--warnfg);padding:10px 14px;border-radius:6px;margin:16px 0;font-size:14px}
+.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:14px 0}
+select,input[type=search],button{font:inherit;padding:7px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--card);color:var(--fg)}
+button{cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--d);outline-offset:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:16px}
+.big{font:700 40px/1 Georgia,serif}.D{color:var(--d)}.R{color:var(--r)}
+.row{display:grid;grid-template-columns:48px 1fr 118px;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--bd);font-size:14px}
+.row .t{display:flex;flex-direction:column;gap:3px}
+.b{height:9px;border-radius:2px;min-width:2px}.b.D{background:var(--d)}.b.R{background:var(--r)}
+.v{text-align:right;font-variant-numeric:tabular-nums;font-size:13px}
+.scroll{overflow-x:auto}.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chip{border:1px solid currentColor;border-radius:99px;padding:2px 10px;font-size:13px;background:none}
+.res button{display:block;width:100%;text-align:left;border-radius:0;border-width:0 0 1px}
+.tr{display:grid;grid-template-columns:64px 1fr 80px 120px;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--bd);font-size:14px}
+.tr button{padding:3px 8px;font-size:13px}.tr button:disabled{opacity:.5;cursor:default}
+@media(max-width:560px){.two{grid-template-columns:1fr}.row{grid-template-columns:40px 1fr 96px}.tr{grid-template-columns:56px 1fr 70px}.tr .v:last-child{display:none}}
+</style></head><body><main>
+<h1>Small-donor money in the midterms</h1>
+<p>How much of each candidate’s individual fundraising came from small donors (unitemized contributions of $200 or less), compared by party, state, and candidate.</p>
+<div class="warn" id="note">Loading data…</div>
+<div class="bar">
+<label>Election year <select id="cyc"></select></label>
+<label>Chamber <select id="off"><option value="">House and Senate</option><option value="H">House</option><option value="S">Senate</option></select></label>
+</div>
+
+<h2>Party comparison</h2>
+<p class="mut">Share = unitemized individual contributions ÷ total individual contributions.</p>
+<div class="two" id="parties"></div>
+
+<h2>By state</h2>
+<p class="mut">Pooled share for each party’s candidates in that state. Blue is Democrats, red is Republicans.</p>
+<div class="scroll box" id="states"></div>
+
+<h2>Browse and pick candidates</h2>
+<p class="mut">Filter and sort, then press Add on at least two Democrats and two Republicans. Candidates who raised very little can have extreme shares, so the minimum-raised filter starts at $10,000.</p>
+<div class="bar">
+<input type="search" id="q" placeholder="Search by name" aria-label="Search by name">
+<select id="fp" aria-label="Party"><option value="">Both parties</option><option value="DEM">Democrats</option><option value="REP">Republicans</option></select>
+<select id="fs" aria-label="State"></select>
+<select id="fi" aria-label="Status"><option value="">All statuses</option><option value="I">Incumbents</option><option value="C">Challengers</option><option value="O">Open seats</option></select>
+<select id="fm" aria-label="Minimum raised"><option value="0">Any amount raised</option><option value="10000" selected>At least $10,000 raised</option><option value="100000">At least $100,000 raised</option><option value="1000000">At least $1 million raised</option></select>
+<select id="sort" aria-label="Sort"><option value="sh">Small-donor share, high to low</option><option value="sl">Small-donor share, low to high</option><option value="u">Unitemized dollars, high to low</option><option value="t">Total raised, high to low</option><option value="n">Name, A to Z</option></select>
+</div>
+<div class="scroll box" id="tbl"></div>
+
+<h2>Your comparison</h2>
+<div class="chips" id="chips"></div>
+<div class="box" id="cmp"></div>
+</main>
+<script>
+var D=[],picked=[],updated="";
+var $=function(i){return document.getElementById(i)};
+var money=function(n){return"$"+Math.round(n).toLocaleString("en-US")},pct=function(x){return(x*100).toFixed(1)+"%"};
+function esc(s){var d=document.createElement("div");d.textContent=s==null?"":s;return d.innerHTML}
+function rows(){var o=$("off").value;return D.filter(function(c){return(!o||c.office===o)&&c.ind>0})}
+function agg(a){var u=0,i=0;a.forEach(function(c){u+=c.unit;i+=c.ind});return{u:u,i:i,s:i?u/i:null,n:a.length}}
+function median(a){var s=a.map(function(c){return c.unit/c.ind}).sort(function(x,y){return x-y}),m=s.length>>1;return s.length?(s.length%2?s[m]:(s[m-1]+s[m])/2):null}
+function render(){
+ $("note").textContent="Source: FEC filings via OpenFEC, "+D.length+" candidates. Data last updated "+updated+". Campaigns report small donors as one unitemized total, which leaves out donors whose repeat gifts passed $200, so these figures undercount small donors. Totals are still changing until final post-election reports are filed.";
+ var R=rows(),h="";
+ ["DEM","REP"].forEach(function(p){var a=R.filter(function(c){return c.party===p}),g=agg(a),k=p==="DEM"?"D":"R",m=median(a);
+  h+='<div class="box"><div class="'+k+'">'+(p==="DEM"?"Democrats":"Republicans")+'</div><div class="big '+k+'">'+(g.s==null?"—":pct(g.s))+'</div><p class="mut">pooled small-donor share · median candidate '+(m==null?"—":pct(m))+'<br>'+money(g.u)+' unitemized of '+money(g.i)+' · '+g.n+' candidates</p></div>'});
+ $("parties").innerHTML=h;
+ var st={};R.forEach(function(c){(st[c.state]=st[c.state]||[]).push(c)});
+ var max=0,rs=Object.keys(st).sort().map(function(s){var d=agg(st[s].filter(function(c){return c.party==="DEM"})),r=agg(st[s].filter(function(c){return c.party==="REP"}));max=Math.max(max,d.s||0,r.s||0);return{s:s,d:d,r:r}});
+ $("states").innerHTML=rs.map(function(x){function bar(g,k){return'<div class="b '+k+'" style="width:'+(g.s==null?0:g.s/(max||1)*100)+'%"></div>'}
+  return'<div class="row"><b>'+esc(x.s)+'</b><div class="t">'+bar(x.d,"D")+bar(x.r,"R")+'</div><div class="v"><span class="D">'+(x.d.s==null?"—":pct(x.d.s))+'</span> · <span class="R">'+(x.r.s==null?"—":pct(x.r.s))+'</span></div></div>'}).join("")||"<p>No candidates match.</p>";
+ table();cmp();
+}
+function label(c){return c.name+" ("+c.party[0]+"-"+c.state+(c.office==="H"?(c.district?" "+c.district:""):" Sen")+")"}
+var lim=40,ST={I:"Incumbent",C:"Challenger",O:"Open seat"};
+function table(){
+ var cur=$("fs").value,sts=Object.keys(rows().reduce(function(o,c){o[c.state]=1;return o},{})).sort();
+ $("fs").innerHTML='<option value="">All states</option>'+sts.map(function(x){return"<option>"+esc(x)+"</option>"}).join("");$("fs").value=cur;
+ var q=$("q").value.trim().toLowerCase(),fp=$("fp").value,fs=$("fs").value,fi=$("fi").value,fm=+$("fm").value,so=$("sort").value;
+ var m=rows().filter(function(c){return(!fp||c.party===fp)&&(!fs||c.state===fs)&&(!fi||c.inc===fi)&&c.ind>=fm&&(!q||c.name.toLowerCase().indexOf(q)>-1)});
+ m.sort(function(a,b){return so==="sh"?b.unit/b.ind-a.unit/a.ind:so==="sl"?a.unit/a.ind-b.unit/b.ind:so==="u"?b.unit-a.unit:so==="t"?b.ind-a.ind:a.name.localeCompare(b.name)});
+ var h='<p class="mut">'+m.length+' candidates match.</p>'+m.slice(0,lim).map(function(c){var on=picked.indexOf(c.id)>-1,k=c.party==="DEM"?"D":"R";
+  return'<div class="tr"><button data-id="'+esc(c.id)+'"'+(on?" disabled":"")+'>'+(on?"Added":"Add")+'</button><span><span class="'+k+'">'+esc(label(c))+'</span><br><span class="mut">'+(ST[c.inc]||"")+'</span></span><span class="v">'+pct(c.unit/c.ind)+'</span><span class="v">'+money(c.unit)+'<br><span class="mut">of '+money(c.ind)+'</span></span></div>'}).join("");
+ if(m.length>lim)h+='<p><button data-more="1">Show more</button></p>';
+ $("tbl").innerHTML=h}
+function cmp(){
+ var P=picked.map(function(id){return D.filter(function(c){return c.id===id})[0]}).filter(Boolean);
+ $("chips").innerHTML=P.map(function(c){return'<button class="chip '+(c.party==="DEM"?"D":"R")+'" data-rm="'+esc(c.id)+'" aria-label="Remove '+esc(c.name)+'">'+esc(c.name)+' ×</button>'}).join("");
+ var nd=P.filter(function(c){return c.party==="DEM"}).length,nr=P.length-nd,msg=(nd<2||nr<2)?'<p class="mut">Add '+(nd<2?(2-nd)+' more Democrat'+(nd===1?"":"s"):"")+(nd<2&&nr<2?" and ":"")+(nr<2?(2-nr)+' more Republican'+(nr===1?"":"s"):"")+" to complete the comparison.</p>":"";
+ var mx=Math.max.apply(null,P.map(function(c){return c.unit/c.ind}).concat([0.01]));
+ $("cmp").innerHTML=msg+(P.length?P.map(function(c){var s=c.unit/c.ind,k=c.party==="DEM"?"D":"R";
+  return'<div class="row"><b class="'+k+'">'+c.party[0]+'</b><div class="t"><span>'+esc(label(c))+'</span><div class="b '+k+'" style="width:'+s/mx*100+'%"></div></div><div class="v">'+pct(s)+'<br><span class="mut">'+money(c.unit)+'</span></div></div>'}).join(""):"<p class='mut'>Press Add in the table above to start a comparison.</p>")}
+function fail(){$("note").textContent="The data could not be loaded. If you opened this file directly from your computer, view it through the GitHub Pages address instead, and check that the update workflow has run at least once."}
+function load(cy){fetch("data/"+cy+".json").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(a){D=a;picked=[];render()}).catch(fail)}
+$("off").onchange=render;["q","fp","fs","fi","fm","sort"].forEach(function(id){$(id).oninput=function(){lim=40;table()}});$("cyc").onchange=function(){load($("cyc").value)};
+$("tbl").onclick=function(e){var id=e.target.getAttribute("data-id");if(id&&picked.indexOf(id)<0){picked.push(id);table();cmp()}if(e.target.getAttribute("data-more")){lim+=40;table()}};
+$("chips").onclick=function(e){var id=e.target.getAttribute("data-rm");if(id){picked=picked.filter(function(x){return x!==id});table();cmp()}};
+fetch("data/manifest.json").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(m){
+ updated=m.updated;$("cyc").innerHTML=m.cycles.map(function(c){return"<option>"+c+"</option>"}).join("");load(m.cycles[0])}).catch(fail);
+</script></body></html>
